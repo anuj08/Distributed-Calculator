@@ -1,7 +1,9 @@
 #include<fstream>
 #include<string>
 #include<sstream>
+#include<iostream>
 
+using namespace std;
 
 template <class T>
 class Matrix {
@@ -59,7 +61,7 @@ class Matrix {
         void print(){
             for(int i=0; i<rows; ++i){
                 for(int j=0; j<cols; ++j){
-                    std::cout<<data[i*rows + j]<<" ";
+                    cout<<data[i*rows + j]<<" ";
                 }
                 std::cout<<std::endl;
             }
