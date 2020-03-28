@@ -1,4 +1,5 @@
 #include<fstream>
+#include<iostream>
 #include<string>
 #include<sstream>
 #include<mpi.h>
@@ -7,15 +8,24 @@
 template <class T>
 class Matrix {
     private:
-        T *data;
-        int rows, cols;
 
     public:
+        T *data;
+        int rows, cols;
         static int argc;
         static char **argv;
-        static void init(int ac, char **av){
-            argc = ac;
-            argv = av;
+        static void init(int ac, char **av);
+
+        Matrix(T *arr, int r, int c){
+            // int c = sizeof(arr)/(sizeof(T)*r);
+            // // std::cout<<"Cols are: "<<c<<" "<<r<<" "<<sizeof(T)<<" "<<sizeof(arr)<<std::endl;
+            rows = r;
+            cols = c;
+            data = new T[r*c];
+            for(int i=0; i<r*c; ++i){
+                data[i] = arr[i];
+
+            }
         }
         //filename, rows, columns, stored in row major format
         Matrix(std::string filename, int r, int c){
@@ -66,7 +76,7 @@ class Matrix {
         void print(){
             for(int i=0; i<rows; ++i){
                 for(int j=0; j<cols; ++j){
-                    std::cout<<data[i*rows + j]<<" ";
+                    std::cout<<data[i*cols + j]<<" ";
                 }
                 std::cout<<std::endl;
             }
@@ -103,4 +113,13 @@ class Matrix {
                     break;
             }
         }
+        Matrix multiply(Matrix &B, int argc, char **argv);
+        int getNumRows(){ return rows; }
+        int getNumColumns() { return cols; }
 };
+
+template<class T>
+void Matrix<T>::init(int ac, char **av){
+    Matrix<T>::argc = ac;
+    Matrix<T>::argv = av;
+}
