@@ -10,17 +10,16 @@ using namespace std;
 template <class T>
 class Matrix {
     private:
-
-    public:
         T *data;
         int rows, cols;
         static int argc;
         static char **argv;
+
+    public:
         static void init(int ac, char **av);
+        static void end();
 
         Matrix(T *arr, int r, int c){
-            // int c = sizeof(arr)/(sizeof(T)*r);
-            // // std::cout<<"Cols are: "<<c<<" "<<r<<" "<<sizeof(T)<<" "<<sizeof(arr)<<std::endl;
             rows = r;
             cols = c;
             data = new T[r*c];
@@ -84,29 +83,6 @@ class Matrix {
             }
         }
 
-        //Take transpose of a matrix
-        void transpose(){
-          T *new_array = new T[rows*cols];
-          for (int i = 0; i < rows; ++i)
-          {
-            for (int j = 0; j < cols; ++j)
-            {
-              // Index in the original matrix.
-              int index1 = i * cols + j;
-
-              // Index in the transpose matrix.
-              int index2 = j * rows + i;
-
-              new_array[index2] = data[index1];
-            }
-          }
-
-          for (int i = 0; i < rows * cols; i++)
-          {
-            data[i] = new_array[i];
-          }
-        }
-
         MPI_Datatype get_type(){
             char name = typeid(T).name()[0];
             switch (name) {
@@ -138,14 +114,21 @@ class Matrix {
                     return MPI_BYTE;
                     break;
             }
+            cerr<<"Datatype not supported"<<endl;
+            exit;
+            return MPI_INT;
         }
-        Matrix multiply(Matrix &B, int argc, char **argv);
+        Matrix multiply(Matrix &B);
         int getNumRows(){ return rows; }
         int getNumColumns() { return cols; }
 };
 
 template<class T>
 void Matrix<T>::init(int ac, char **av){
-    Matrix<T>::argc = ac;
-    Matrix<T>::argv = av;
+    MPI_Init(&ac, &av);
+}
+
+template<class T>
+void Matrix<T>::end(){
+    MPI_Finalize();
 }
