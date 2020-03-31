@@ -3,7 +3,9 @@
 #include<string>
 #include<sstream>
 #include<mpi.h>
+#include<iostream>
 
+using namespace std;
 
 template <class T>
 class Matrix {
@@ -81,6 +83,30 @@ class Matrix {
                 std::cout<<std::endl;
             }
         }
+
+        //Take transpose of a matrix
+        void transpose(){
+          T *new_array = new T[rows*cols];
+          for (int i = 0; i < rows; ++i)
+          {
+            for (int j = 0; j < cols; ++j)
+            {
+              // Index in the original matrix.
+              int index1 = i * cols + j;
+
+              // Index in the transpose matrix.
+              int index2 = j * rows + i;
+
+              new_array[index2] = data[index1];
+            }
+          }
+
+          for (int i = 0; i < rows * cols; i++)
+          {
+            data[i] = new_array[i];
+          }
+        }
+
         MPI_Datatype get_type(){
             char name = typeid(T).name()[0];
             switch (name) {
